@@ -12,6 +12,8 @@
 ** If not, see <https://www.gnu.org/licenses/>.
 **/
 
+#define ZABBIX_JS_DEBUGGER_SUPPORT // move this anywhere??
+
 #include "zbxlog.h"
 #include "zbxgetopt.h"
 #include "zbxembed.h"
@@ -19,6 +21,10 @@
 #include "zbxstr.h"
 #include "zbxnix.h"
 #include "zbxbincommon.h"
+
+#if defined(ZABBIX_JS_DEBUGGER_SUPPORT)
+#include "duk_trans_socket.h"
+#endif
 
 ZBX_GET_CONFIG_VAR2(const char *, const char *, zbx_progname, NULL)
 static const char	title_message[] = "zabbix_js";
@@ -53,6 +59,10 @@ static const char	*help_message[] = {
 	"  -p,--param input-param       Specify input parameter",
 	"  -w,--webdriver url           Specify webdriver URL",
 	"  -l,--loglevel log-level      Specify log level",
+#ifdef ZABBIX_JS_DEBUGGER_SUPPORT
+	"  -d,--debugger                Wait for a duktape debugger to attach on port 9091",
+	"  -r,--reattach                Wait for debugger reattach after detaching",
+#endif
 	"  -t --timeout timeout         Specify the timeout in seconds. Valid range: " JS_TIMEOUT_MIN_STR "-"
 			JS_TIMEOUT_MAX_STR " seconds",
 	"                               (default: " JS_TIMEOUT_DEF_STR " seconds)",
@@ -73,15 +83,29 @@ struct zbx_option	longopts[] =
 	{"webdriver",			1,	NULL,	'w'},
 	{"loglevel",			1,	NULL,	'l'},
 	{"timeout",			1,	NULL,	't'},
+#ifdef ZABBIX_JS_DEBUGGER_SUPPORT
+	{"debugger",			1,	NULL,	'd'},
+	{"reattach",			1,	NULL,	'r'},
+#endif
 	{"help",			0,	NULL,	'h'},
 	{"version",			0,	NULL,	'V'},
 	{0}
 };
 
 /* short options */
+#ifdef ZABBIX_JS_DEBUGGER_SUPPORT
+static char	shortopts[] = "s:i:p:hVl:t:w:d:r:";
+#else
 static char	shortopts[] = "s:i:p:hVl:t:w:";
+#endif
 
 /* end of COMMAND LINE OPTIONS */
+
+/* debugger options */
+#if defined(ZABBIX_JS_DEBUGGER_SUPPORT)
+static int debugger = 0;
+static int debugger_reattach = 0;
+#endif
 
 static char	*read_file(const char *filename, char **error)
 {
@@ -156,6 +180,8 @@ static int	execute_script(const char *command, const char *param, int timeout, c
 
 		goto failure;
 	}
+
+
 
 	if (NULL != webdriver && FAIL == zbx_es_init_browser_env(&es, webdriver, &errmsg))
 	{
@@ -265,6 +291,12 @@ int	main(int argc, char **argv)
 					exit(EXIT_FAILURE);
 				}
 
+				break;
+			case 'd':
+				// TODO: debugger impl
+				break;
+			case 'r':
+				// TODO: debugger reattach impl
 				break;
 			case 'h':
 				zbx_print_help(zbx_progname, help_message, usage_message, NULL);

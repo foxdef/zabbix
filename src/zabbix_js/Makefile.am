@@ -2,7 +2,9 @@
 
 bin_PROGRAMS = zabbix_js
 
-zabbix_js_SOURCES = zabbix_js.c
+zabbix_js_SOURCES = zabbix_js.c \
+                    duk_trans_socket.h \
+					duk_trans_socket_unix.c
 
 zabbix_js_LDADD = \
 	$(top_srcdir)/src/libs/zbxlog/libzbxlog.a \

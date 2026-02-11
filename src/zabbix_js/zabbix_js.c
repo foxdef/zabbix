@@ -181,7 +181,28 @@ static int	execute_script(const char *command, const char *param, int timeout, c
 		goto failure;
 	}
 
-
+	if (1) {
+#if defined(DUK_CMDLINE_DEBUGGER_SUPPORT)
+		fprintf(stderr, "Debugger enabled, create socket and wait for connection\n");
+		fflush(stderr);
+		duk_trans_socket_init();
+		duk_trans_socket_waitconn();
+		fprintf(stderr, "Debugger connected, call duk_debugger_attach() and then execute requested file(s)/eval\n");
+		fflush(stderr);
+		duk_debugger_attach(ctx,
+		                    duk_trans_socket_read_cb,
+		                    duk_trans_socket_write_cb,
+		                    duk_trans_socket_peek_cb,
+		                    duk_trans_socket_read_flush_cb,
+		                    duk_trans_socket_write_flush_cb,
+		                    debugger_request,
+		                    debugger_detached,
+		                    NULL);
+#else
+		zbx_free(errmsg);
+		zabbix_log(LOG_LEVEL_WARNING, "option --debugger ignored, no debugger support");
+#endif
+	}
 
 	if (NULL != webdriver && FAIL == zbx_es_init_browser_env(&es, webdriver, &errmsg))
 	{

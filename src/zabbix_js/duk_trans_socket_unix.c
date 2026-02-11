@@ -18,7 +18,6 @@
 #include <poll.h>
 #endif  /* !USE_SELECT */
 #include <errno.h>
-#include "duktape.h"
 #include "../libs/zbxembed/duktape.h"
 
 #if !defined(DUK_DEBUG_PORT)

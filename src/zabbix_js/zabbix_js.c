@@ -60,7 +60,7 @@ static const char	*help_message[] = {
 	"  -p,--param input-param       Specify input parameter",
 	"  -w,--webdriver url           Specify webdriver URL",
 	"  -l,--loglevel log-level      Specify log level",
-#ifdef ZABBIX_JS_DEBUGGER_SUPPORT
+#if defined(ZABBIX_JS_DEBUGGER_SUPPORT)
 	"  -d,--debugger                Wait for a duktape debugger to attach on port 9091",
 	"  -r,--reattach                Wait for debugger reattach after detaching",
 #endif
@@ -84,7 +84,7 @@ struct zbx_option	longopts[] =
 	{"webdriver",			1,	NULL,	'w'},
 	{"loglevel",			1,	NULL,	'l'},
 	{"timeout",			1,	NULL,	't'},
-#ifdef ZABBIX_JS_DEBUGGER_SUPPORT
+#if defined(ZABBIX_JS_DEBUGGER_SUPPORT)
 	{"debugger",			1,	NULL,	'd'},
 	{"reattach",			1,	NULL,	'r'},
 #endif
@@ -94,8 +94,8 @@ struct zbx_option	longopts[] =
 };
 
 /* short options */
-#ifdef ZABBIX_JS_DEBUGGER_SUPPORT
-static char	shortopts[] = "s:i:p:hVl:t:w:d:r:";
+#if defined(ZABBIX_JS_DEBUGGER_SUPPORT)
+static char	shortopts[] = "s:i:p:hVl:t:w:dr";
 #else
 static char	shortopts[] = "s:i:p:hVl:t:w:";
 #endif

@@ -24,6 +24,7 @@
 
 #if defined(ZABBIX_JS_DEBUGGER_SUPPORT)
 #include "duk_trans_socket.h"
+#include "../libs/zbxembed/embed.h"
 #endif
 
 ZBX_GET_CONFIG_VAR2(const char *, const char *, zbx_progname, NULL)
@@ -258,7 +259,7 @@ static int	execute_script(const char *command, const char *param, int timeout, c
 		duk_trans_socket_init();
 		duk_trans_socket_waitconn();
 		zabbix_log(LOG_LEVEL_WARNING, "Debugger connected, call duk_debugger_attach() and then execute requested file(s)/eval");
-		duk_debugger_attach(es.env.ctx,
+		duk_debugger_attach(es.env->ctx,
 		                    duk_trans_socket_read_cb,
 		                    duk_trans_socket_write_cb,
 		                    duk_trans_socket_peek_cb,

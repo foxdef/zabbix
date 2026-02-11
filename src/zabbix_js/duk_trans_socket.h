@@ -1,7 +1,7 @@
 #if !defined(DUK_TRANS_SOCKET_H_INCLUDED)
 #define DUK_TRANS_SOCKET_H_INCLUDED
 
-#include "duktape.h"
+#include "../libs/zbxembed/duktape.h"
 
 void duk_trans_socket_init(void);
 void duk_trans_socket_finish(void);
